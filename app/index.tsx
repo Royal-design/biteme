@@ -34,7 +34,7 @@ export default function Index() {
   useEffect(() => {
     startAnimation();
     setTimeout(() => {
-      router.replace("/home");
+      router.replace("/recipes");
     }, 2500);
   }, []);
 
