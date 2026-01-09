@@ -10,14 +10,15 @@ export default function Home() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 50 }}
-        className="space-y-4"
+        className="space-y-4 mt-8 p-4"
       >
         <View className="flex-row justify-between items-center">
           <Image
             source={{ uri: "https://i.pravatar.cc/150?img=2" }}
+            className="w-16 h-16 rounded-full"
             accessibilityLabel="Avatar"
           />
-          <Ionicons name="notifications" />
+          <Ionicons name="notifications" size={32} />
         </View>
       </ScrollView>
 
