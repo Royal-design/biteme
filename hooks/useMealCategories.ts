@@ -13,32 +13,29 @@ export function useMealCategories() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let isMounted = true;
+    const controller = new AbortController();
 
     const fetchCategories = async () => {
       try {
-        const res = await mealDBApi.get("/categories.php");
+        const res = await mealDBApi.get("/categories.php", {
+          signal: controller.signal,
+        });
 
-        if (isMounted) {
-          setCategories(res.data.categories);
-        }
+        setCategories(res.data.categories ?? []);
+        setError(null);
       } catch (err) {
-        if (isMounted) {
-          const message =
-            err instanceof Error ? err.message : "Failed to load categories";
-          setError(message);
-        }
+        const message =
+          err instanceof Error ? err.message : "Failed to load categories";
+        setError(message);
       } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+        setLoading(false);
       }
     };
 
     fetchCategories();
 
     return () => {
-      isMounted = false;
+      controller.abort();
     };
   }, []);
 

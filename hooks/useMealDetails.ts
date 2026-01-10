@@ -6,6 +6,11 @@ export type MealDetail = {
   strMeal: string;
   strInstructions: string;
   strMealThumb: string;
+  strYoutube: string;
+  strArea: string;
+  strTags: string | null;
+
+  [key: string]: string | null;
 };
 
 export function useMealDetail(id?: string) {
@@ -15,23 +20,33 @@ export function useMealDetail(id?: string) {
 
   useEffect(() => {
     if (!id) return;
+    const controller = new AbortController();
 
     const fetchMeal = async () => {
       try {
         setLoading(true);
         const { data } = await axios.get(
-          `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
+          `https://www.themealdb.com/api/json/v1/1/lookup.php`,
+          {
+            params: { i: id },
+            signal: controller.signal,
+          }
         );
         setMeal(data.meals[0]);
         setError(null);
-      } catch (err: any) {
-        setError(err.message || "Failed to fetch meal");
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Failed to fetch meal details";
+        setError(message);
       } finally {
         setLoading(false);
       }
     };
 
     fetchMeal();
+    return () => {
+      controller.abort();
+    };
   }, [id]);
 
   return { meal, loading, error };

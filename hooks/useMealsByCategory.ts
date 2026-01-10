@@ -14,35 +14,32 @@ export function useMealsByCategory(category: string | null) {
 
   useEffect(() => {
     if (!category) return;
-
-    let isMounted = true;
-    setLoading(true);
+    const controller = new AbortController();
 
     const fetchMeals = async () => {
       try {
+        setLoading(true);
+
         const res = await mealDBApi.get("/filter.php", {
           params: { c: category },
+          signal: controller.signal,
         });
 
-        if (isMounted) {
-          setMeals(res.data.meals || []);
-          setError(null);
-        }
+        setMeals(res.data.meals || []);
+        setError(null);
       } catch (err) {
-        if (isMounted) {
-          const message =
-            err instanceof Error ? err.message : "Failed to load categories";
-          setError(message);
-        }
+        const message =
+          err instanceof Error ? err.message : "Failed to fetch meal";
+        setError(message);
       } finally {
-        if (isMounted) setLoading(false);
+        setLoading(false);
       }
     };
 
     fetchMeals();
 
     return () => {
-      isMounted = false;
+      controller.abort();
     };
   }, [category]);
 
