@@ -1,5 +1,5 @@
 import { useMealDetail, type MealDetail } from "@/hooks/useMealDetails";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Octicons, SimpleLineIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -23,6 +23,28 @@ function getIngredients(meal: MealDetail) {
 
   return items;
 }
+
+const info = [
+  {
+    icon: <Ionicons name="time-outline" size={24} color="black" />,
+    label: "Mins",
+    value: "35",
+  },
+  {
+    icon: <Ionicons name="people" size={24} color="black" />,
+    label: "Servings",
+    value: "03",
+  },
+  {
+    icon: <SimpleLineIcons name="fire" size={24} color="black" />,
+    label: "Cal",
+    value: "103",
+  },
+  {
+    icon: <Octicons name="stack" size={24} color="black" />,
+    label: "Easy",
+  },
+];
 
 export default function RecipeDetailPage() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -75,6 +97,23 @@ export default function RecipeDetailPage() {
       <View className="p-4">
         <Text className="text-3xl font-bold mt-4">{meal.strMeal}</Text>
         <Text className="text-xl">{meal.strArea}</Text>
+        <View className="flex-row gap-8 mt-4">
+          {info.map((item, idx) => (
+            <View
+              key={idx}
+              className="flex-1 items-center rounded-full bg-yellow-400 py-4"
+            >
+              <View className="rounded-full p-3 bg-white mb-2">
+                {item.icon}
+              </View>
+
+              <Text className="text-sm text-neutral-700">{item.label}</Text>
+
+              <Text className="font-bold text-lg">{item.value}</Text>
+            </View>
+          ))}
+        </View>
+
         <View className="mt-6">
           <Text className="text-xl font-bold mb-3">Ingredients</Text>
 
