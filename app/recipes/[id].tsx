@@ -3,8 +3,10 @@ import { Ionicons, Octicons, SimpleLineIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { useCallback, useState } from "react";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
+import YoutubePlayer from "react-native-youtube-iframe";
 
 function getIngredients(meal: MealDetail) {
   const items: { ingredient: string; measure: string }[] = [];
@@ -23,6 +25,11 @@ function getIngredients(meal: MealDetail) {
 
   return items;
 }
+const getYoutubeId = (url?: string) => {
+  if (!url) return null;
+  const match = url.match(/v=([^&]+)/);
+  return match ? match[1] : null;
+};
 
 const info = [
   {
@@ -49,13 +56,22 @@ const info = [
 export default function RecipeDetailPage() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [liked, setLiked] = useState(false);
+  const [playing, setPlaying] = useState(false);
 
   const { meal, loading, error } = useMealDetail(id);
   const router = useRouter();
 
+  const onStateChange = useCallback((state: string) => {
+    if (state === "ended") {
+      setPlaying(false);
+      Alert.alert("video has finished playing!");
+    }
+  }, []);
+
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>{error}</Text>;
   if (!meal) return <Text>No meal found</Text>;
+  const videoId = getYoutubeId(meal?.strYoutube);
 
   return (
     <ScrollView
@@ -97,7 +113,10 @@ export default function RecipeDetailPage() {
       <View className="p-4">
         <Text className="text-3xl font-bold mt-4">{meal.strMeal}</Text>
         <Text className="text-xl">{meal.strArea}</Text>
-        <View className="flex-row gap-8 mt-4">
+        <Animated.View
+          entering={FadeInDown.delay(100).duration(700).springify().damping(12)}
+          className="flex-row gap-8 mt-4"
+        >
           {info.map((item, idx) => (
             <View
               key={idx}
@@ -112,10 +131,13 @@ export default function RecipeDetailPage() {
               <Text className="font-bold text-lg">{item.value}</Text>
             </View>
           ))}
-        </View>
+        </Animated.View>
 
-        <View className="mt-6">
-          <Text className="text-xl font-bold mb-3">Ingredients</Text>
+        <Animated.View
+          entering={FadeInDown.delay(200).duration(700).springify().damping(12)}
+          className="mt-6"
+        >
+          <Text className="text-2xl font-bold mb-3">Ingredients</Text>
 
           {getIngredients(meal).map((item, index) => (
             <View key={index} className="flex-row items-center gap-2 mb-2">
@@ -128,9 +150,42 @@ export default function RecipeDetailPage() {
               </View>
             </View>
           ))}
-        </View>
+        </Animated.View>
+        {meal?.strInstructions && (
+          <Animated.View
+            entering={FadeInDown.delay(300)
+              .duration(700)
+              .springify()
+              .damping(12)}
+            className="mt-4 pb-12"
+          >
+            <Text className="text-2xl font-bold mb-2">Instructions</Text>
 
-        {/* <Text className="mt-2 text-neutral-600">{meal.strInstructions}</Text> */}
+            <Text className="mt-2 text-neutral-600">
+              {meal.strInstructions}
+            </Text>
+          </Animated.View>
+        )}
+        {videoId && (
+          <Animated.View
+            entering={FadeInDown.delay(400)
+              .duration(700)
+              .springify()
+              .damping(12)}
+            className="mt-6 pb-12"
+          >
+            <Text className="text-2xl font-bold mb-3">Video</Text>
+
+            <View className="rounded-2xl overflow-hidden">
+              <YoutubePlayer
+                height={220}
+                play={playing}
+                videoId={videoId}
+                onChangeState={onStateChange}
+              />
+            </View>
+          </Animated.View>
+        )}
       </View>
 
       <StatusBar style="light" />
