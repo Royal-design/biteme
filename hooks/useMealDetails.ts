@@ -6,5 +6,6 @@ export function useMealDetails(id: string) {
     queryKey: ["mealDetails", id],
     queryFn: () => getMealDetails(id),
     enabled: !!id,
+    staleTime: 5 * 60 * 1000,
   });
 }

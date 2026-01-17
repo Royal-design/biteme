@@ -5,7 +5,14 @@ import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useState } from "react";
-import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import YoutubePlayer from "react-native-youtube-iframe";
 
@@ -69,7 +76,12 @@ export default function RecipeDetailPage() {
     }
   }, []);
 
-  if (isLoading) return <Text>Loading...</Text>;
+  if (isLoading)
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator />
+      </View>
+    );
   if (error) return <Text>{error.message}</Text>;
   if (!meal) return <Text>No meal found</Text>;
   const videoId = getYoutubeId(meal?.strYoutube);

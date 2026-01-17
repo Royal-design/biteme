@@ -5,5 +5,6 @@ export function useMeals(category: string) {
   return useQuery({
     queryKey: ["meals", category],
     queryFn: () => getMealByCategory(category),
+    enabled: !!category,
   });
 }
