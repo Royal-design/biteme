@@ -1,9 +1,5 @@
+import { mealDBApi } from "@/lib/axios";
 import type { MealCategory, MealDetail, MealSummary } from "@/type/meal";
-import axios from "axios";
-
-export const mealDBApi = axios.create({
-  baseURL: "https://www.themealdb.com/api/json/v1/1",
-});
 
 export const getMealCategory = async (): Promise<MealCategory[]> => {
   const { data } = await mealDBApi.get("/categories.php");
