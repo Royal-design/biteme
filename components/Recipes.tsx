@@ -1,4 +1,4 @@
-import type { Meal } from "@/hooks/useMealsByCategory";
+import type { MealSummary } from "@/type/meal";
 import MasonryList from "@react-native-seoul/masonry-list";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
@@ -12,11 +12,11 @@ export default function Recipes({
   loading,
   error,
 }: {
-  meals: Meal[];
+  meals: MealSummary[];
   loading: boolean;
-  error: string | null;
+  error: Error | null;
 }) {
-  if (error) return <Text>{error}</Text>;
+  if (error) return <Text>{error.message}</Text>;
   return (
     <View className="gap-4">
       <Text className="text-neutral-600 font-semibold text-4xl">Recipes</Text>
@@ -30,7 +30,7 @@ export default function Recipes({
             numColumns={2}
             showsVerticalScrollIndicator={false}
             renderItem={({ item, i }) => (
-              <RecipeCard index={i} item={item as Meal} />
+              <RecipeCard index={i} item={item as MealSummary} />
             )}
             //   refreshing={isLoadingNext}
             //   onRefresh={() => refetch({ first: ITEM_CNT })}
@@ -43,7 +43,7 @@ export default function Recipes({
   );
 }
 
-const RecipeCard = ({ item, index }: { item: Meal; index: number }) => {
+const RecipeCard = ({ item, index }: { item: MealSummary; index: number }) => {
   const router = useRouter();
   const isEven = index % 2 === 0;
 

@@ -1,4 +1,5 @@
-import { useMealDetail, type MealDetail } from "@/hooks/useMealDetails";
+import { useMealDetails } from "@/hooks/useMealDetails";
+import type { MealDetail } from "@/type/meal";
 import { Ionicons, Octicons, SimpleLineIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -58,7 +59,7 @@ export default function RecipeDetailPage() {
   const [liked, setLiked] = useState(false);
   const [playing, setPlaying] = useState(false);
 
-  const { meal, loading, error } = useMealDetail(id);
+  const { data: meal, isLoading, error } = useMealDetails(id);
   const router = useRouter();
 
   const onStateChange = useCallback((state: string) => {
@@ -68,8 +69,8 @@ export default function RecipeDetailPage() {
     }
   }, []);
 
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>{error}</Text>;
+  if (isLoading) return <Text>Loading...</Text>;
+  if (error) return <Text>{error.message}</Text>;
   if (!meal) return <Text>No meal found</Text>;
   const videoId = getYoutubeId(meal?.strYoutube);
 

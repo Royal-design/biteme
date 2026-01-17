@@ -1,4 +1,4 @@
-import { useMealCategories } from "@/hooks/useMealCategories";
+import { useCategory } from "@/hooks/useMealCategory";
 import React from "react";
 import {
   ActivityIndicator,
@@ -17,20 +17,10 @@ export default function Categories({
   activeCategory: string;
   setActiveCategory: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const { categories, loading, error } = useMealCategories();
-  const formattedCategories = categories.map((cat) => ({
-    id: cat.idCategory,
-    name: cat.strCategory,
-    image: cat.strCategoryThumb,
-  }));
-  //   useEffect(() => {
-  //     if (!activeCategory && formattedCategories.length > 0) {
-  //       setActiveCategory(formattedCategories[0].name);
-  //     }
-  //   }, [formattedCategories, activeCategory, setActiveCategory]);
+  const { data: categories, error, isLoading } = useCategory();
 
-  if (loading) return <ActivityIndicator />;
-  if (error) return <Text>{error}</Text>;
+  if (isLoading) return <ActivityIndicator />;
+  if (error) return <Text>{error.message}</Text>;
 
   return (
     <Animated.View
@@ -42,24 +32,24 @@ export default function Categories({
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 12, gap: 6 }}
       >
-        {formattedCategories.map((cat) => {
-          const isActive = activeCategory === cat.name;
+        {categories?.map((cat) => {
+          const isActive = activeCategory === cat.strCategory;
           const activeBg = isActive ? "bg-amber-400" : "bg-black/10";
           return (
             <TouchableOpacity
-              key={cat.id}
+              key={cat.idCategory}
               activeOpacity={0.6}
               className="items-center"
-              onPress={() => setActiveCategory(cat.name)}
+              onPress={() => setActiveCategory(cat.strCategory)}
             >
               <View className={`rounded-full p-2 ${activeBg}`}>
                 <Image
-                  source={{ uri: cat.image }}
-                  accessibilityLabel={cat.name}
+                  source={{ uri: cat.strCategoryThumb }}
+                  accessibilityLabel={cat.strCategory}
                   className="w-16 h-16 rounded-full"
                 />
               </View>
-              <Text className="text-xs">{cat.name}</Text>
+              <Text className="text-xs">{cat.strCategory}</Text>
             </TouchableOpacity>
           );
         })}
