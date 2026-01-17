@@ -8,7 +8,7 @@ import { StatusBar } from "expo-status-bar";
 import { useCallback, useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
-// import YoutubePlayer from "react-native-youtube-iframe";
+import YoutubePlayer from "react-native-youtube-iframe";
 
 function getIngredients(meal: MealDetail) {
   const items: { ingredient: string; measure: string }[] = [];
@@ -60,15 +60,6 @@ export default function RecipeDetailPage() {
   const [liked, setLiked] = useState(false);
   const [playing, setPlaying] = useState(false);
 
-  // const [YoutubePlayer, setYoutubePlayer] = useState<any>(null);
-
-  // useEffect(() => {
-  //   if (Platform.OS !== "web") {
-  //     import("react-native-youtube-iframe").then((mod) => {
-  //       setYoutubePlayer(() => mod.default);
-  //     });
-  //   }
-  // }, []);
   const { data: meal, isLoading, error } = useMealDetails(id);
   const router = useRouter();
 
@@ -174,7 +165,7 @@ export default function RecipeDetailPage() {
             </Text>
           </Animated.View>
         )}
-        {/* {videoId && YoutubePlayer && (
+        {videoId && YoutubePlayer && (
           <Animated.View
             entering={FadeInDown.delay(400).duration(700).damping(12)}
             className="mt-6 pb-12"
@@ -190,7 +181,7 @@ export default function RecipeDetailPage() {
               />
             </View>
           </Animated.View>
-        )} */}
+        )}
       </View>
 
       <StatusBar style="light" />

@@ -24,9 +24,14 @@ export default function Recipes({
       {!categoryLoading && (
         <Text className="text-neutral-600 font-semibold text-4xl">Recipes</Text>
       )}
+
       <View>
         {loading ? (
           <Loading size="large" className="mt-24" />
+        ) : meals.length === 0 ? (
+          <View className="items-center justify-center mt-24">
+            <Text className="text-neutral-500 text-lg">No recipes found.</Text>
+          </View>
         ) : (
           <MasonryList
             data={meals}
@@ -36,10 +41,7 @@ export default function Recipes({
             renderItem={({ item, i }) => (
               <RecipeCard index={i} item={item as MealSummary} />
             )}
-            //   refreshing={isLoadingNext}
-            //   onRefresh={() => refetch({ first: ITEM_CNT })}
             onEndReachedThreshold={0.1}
-            //   onEndReached={() => loadNext(ITEM_CNT)}
           />
         )}
       </View>

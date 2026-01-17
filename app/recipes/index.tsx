@@ -11,6 +11,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState<string>("");
   const { data: categories, isLoading: categoryLoading } = useCategory();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [searchQuery]);
 
   useEffect(() => {
     if (categories && categories.length > 0 && !activeCategory) {
@@ -19,6 +29,10 @@ export default function Home() {
   }, [categories, activeCategory]);
 
   const { data: meals, isLoading, error } = useMealByCategory(activeCategory);
+
+  const filteredMeals = meals?.filter((meal) =>
+    meal.strMeal.toLowerCase().includes(debouncedQuery.toLowerCase()),
+  );
 
   return (
     <SafeAreaView className="flex-1">
@@ -48,6 +62,8 @@ export default function Home() {
           <TextInput
             placeholder="Search recipe..."
             className="flex-1 tracking-wide ml-3 text-base"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
           />
           <View className="bg-white rounded-full p-2">
             <Ionicons name="search" size={24} />
@@ -60,7 +76,7 @@ export default function Home() {
           />
           <Recipes
             categoryLoading={categoryLoading}
-            meals={meals || []}
+            meals={filteredMeals || []}
             loading={isLoading}
             error={error}
           />
