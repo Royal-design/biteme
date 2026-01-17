@@ -1,15 +1,24 @@
 import Categories from "@/components/Categories";
 import Recipes from "@/components/Recipes";
-import { useMeals } from "@/hooks/useMeals";
+import { useCategory } from "@/hooks/useMealCategory";
+import { useMealByCategory } from "@/hooks/useMealsByCategory";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Home() {
-  const [activeCategory, setActiveCategory] = useState<string>("Beef");
-  const { data: meals, isLoading, error } = useMeals(activeCategory);
+  const [activeCategory, setActiveCategory] = useState<string>("");
+  const { data: categories, isLoading: categoryLoading } = useCategory();
+
+  useEffect(() => {
+    if (categories && categories.length > 0 && !activeCategory) {
+      setActiveCategory(categories[0].strCategory);
+    }
+  }, [categories, activeCategory]);
+
+  const { data: meals, isLoading, error } = useMealByCategory(activeCategory);
 
   return (
     <SafeAreaView className="flex-1">
@@ -49,7 +58,12 @@ export default function Home() {
             activeCategory={activeCategory}
             setActiveCategory={setActiveCategory}
           />
-          <Recipes meals={meals || []} loading={isLoading} error={error} />
+          <Recipes
+            categoryLoading={categoryLoading}
+            meals={meals || []}
+            loading={isLoading}
+            error={error}
+          />
         </View>
       </ScrollView>
 

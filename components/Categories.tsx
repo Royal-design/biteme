@@ -2,6 +2,7 @@ import { useCategory } from "@/hooks/useMealCategory";
 import React from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import Loading from "./Loading";
 
 export default function Categories({
   activeCategory,
@@ -10,9 +11,9 @@ export default function Categories({
   activeCategory: string;
   setActiveCategory: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const { data: categories, error } = useCategory();
+  const { data: categories, error, isLoading } = useCategory();
 
-  // if (isLoading) return <ActivityIndicator />;
+  if (isLoading) return <Loading />;
   if (error) return <Text>{error.message}</Text>;
 
   return (

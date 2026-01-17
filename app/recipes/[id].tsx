@@ -1,3 +1,4 @@
+import Loading from "@/components/Loading";
 import { useMealDetails } from "@/hooks/useMealDetails";
 import type { MealDetail } from "@/type/meal";
 import { Ionicons, Octicons, SimpleLineIcons } from "@expo/vector-icons";
@@ -5,16 +6,9 @@ import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useState } from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
-import YoutubePlayer from "react-native-youtube-iframe";
+// import YoutubePlayer from "react-native-youtube-iframe";
 
 function getIngredients(meal: MealDetail) {
   const items: { ingredient: string; measure: string }[] = [];
@@ -66,6 +60,15 @@ export default function RecipeDetailPage() {
   const [liked, setLiked] = useState(false);
   const [playing, setPlaying] = useState(false);
 
+  // const [YoutubePlayer, setYoutubePlayer] = useState<any>(null);
+
+  // useEffect(() => {
+  //   if (Platform.OS !== "web") {
+  //     import("react-native-youtube-iframe").then((mod) => {
+  //       setYoutubePlayer(() => mod.default);
+  //     });
+  //   }
+  // }, []);
   const { data: meal, isLoading, error } = useMealDetails(id);
   const router = useRouter();
 
@@ -76,12 +79,7 @@ export default function RecipeDetailPage() {
     }
   }, []);
 
-  if (isLoading)
-    return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator />
-      </View>
-    );
+  if (isLoading) return <Loading />;
   if (error) return <Text>{error.message}</Text>;
   if (!meal) return <Text>No meal found</Text>;
   const videoId = getYoutubeId(meal?.strYoutube);
@@ -127,7 +125,7 @@ export default function RecipeDetailPage() {
         <Text className="text-3xl font-bold mt-4">{meal.strMeal}</Text>
         <Text className="text-xl">{meal.strArea}</Text>
         <Animated.View
-          entering={FadeInDown.delay(100).duration(700).springify().damping(12)}
+          entering={FadeInDown.delay(100).duration(700).damping(12)}
           className="flex-row gap-8 mt-4"
         >
           {info.map((item, idx) => (
@@ -147,7 +145,7 @@ export default function RecipeDetailPage() {
         </Animated.View>
 
         <Animated.View
-          entering={FadeInDown.delay(200).duration(700).springify().damping(12)}
+          entering={FadeInDown.delay(200).duration(700).damping(12)}
           className="mt-6"
         >
           <Text className="text-2xl font-bold mb-3">Ingredients</Text>
@@ -166,10 +164,7 @@ export default function RecipeDetailPage() {
         </Animated.View>
         {meal?.strInstructions && (
           <Animated.View
-            entering={FadeInDown.delay(300)
-              .duration(700)
-              .springify()
-              .damping(12)}
+            entering={FadeInDown.delay(300).duration(700).damping(12)}
             className="mt-4 pb-12"
           >
             <Text className="text-2xl font-bold mb-2">Instructions</Text>
@@ -179,12 +174,9 @@ export default function RecipeDetailPage() {
             </Text>
           </Animated.View>
         )}
-        {videoId && (
+        {/* {videoId && YoutubePlayer && (
           <Animated.View
-            entering={FadeInDown.delay(400)
-              .duration(700)
-              .springify()
-              .damping(12)}
+            entering={FadeInDown.delay(400).duration(700).damping(12)}
             className="mt-6 pb-12"
           >
             <Text className="text-2xl font-bold mb-3">Video</Text>
@@ -198,7 +190,7 @@ export default function RecipeDetailPage() {
               />
             </View>
           </Animated.View>
-        )}
+        )} */}
       </View>
 
       <StatusBar style="light" />

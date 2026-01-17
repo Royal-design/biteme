@@ -10,16 +10,20 @@ import Loading from "./Loading";
 export default function Recipes({
   meals,
   loading,
+  categoryLoading,
   error,
 }: {
   meals: MealSummary[];
   loading: boolean;
+  categoryLoading: boolean;
   error: Error | null;
 }) {
   if (error) return <Text>{error.message}</Text>;
   return (
     <View className="gap-4">
-      <Text className="text-neutral-600 font-semibold text-4xl">Recipes</Text>
+      {!categoryLoading && (
+        <Text className="text-neutral-600 font-semibold text-4xl">Recipes</Text>
+      )}
       <View>
         {loading ? (
           <Loading size="large" className="mt-24" />
@@ -52,9 +56,7 @@ const RecipeCard = ({ item, index }: { item: MealSummary; index: number }) => {
   };
   return (
     <Animated.View
-      entering={FadeInDown.delay(index * 100)
-        .springify()
-        .damping(12)}
+      entering={FadeInDown.delay(index * 100).damping(12)}
       className=""
     >
       <Pressable
