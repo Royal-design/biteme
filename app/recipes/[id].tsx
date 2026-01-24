@@ -117,7 +117,7 @@ export default function RecipeDetailPage() {
         <Text className="text-xl">{meal.strArea}</Text>
         <Animated.View
           entering={FadeInDown.delay(100).duration(700).damping(12)}
-          className="flex-row gap-8 mt-4"
+          className="flex-row gap-8  mt-4"
         >
           {info.map((item, idx) => (
             <View
