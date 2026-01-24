@@ -1,13 +1,13 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import React from "react";
+import { Platform } from "react-native";
 import "../global.css";
 
-if (__DEV__) {
+if (__DEV__ && Platform.OS !== "web") {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   require("../ReactotronConfig");
 }
-
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
