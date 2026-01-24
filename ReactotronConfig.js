@@ -1,5 +1,10 @@
 import Reactotron from "reactotron-react-native";
 
-Reactotron.configure({ host: "10.176.13.143" }).useReactNative().connect();
+Reactotron.configure({
+  host: "localhost",
+  name: "biteme",
+})
+  .useReactNative()
+  .connect();
 
 console.tron = Reactotron;
